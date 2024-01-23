@@ -36,6 +36,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/awslabs/soci-snapshotter/service/keychain/credentialproviderconfig"
 	"io"
 	golog "log"
 	"net"
@@ -140,6 +141,13 @@ func main() {
 			opts = append(opts, kubeconfig.WithKubeconfigPath(kcp))
 		}
 		credsFuncs = append(credsFuncs, kubeconfig.NewKubeconfigKeychain(ctx, opts...))
+	}
+	if cfg.ExternalCredentialProviderConfig.EnableKeychain {
+		var opts []credentialproviderconfig.Option
+		if path := cfg.ExternalCredentialProviderConfig.ProviderBinaryPath; path != "" {
+			opts = append(opts, credentialproviderconfig.WithCredentialProviderPath(path))
+		}
+		credsFuncs = append(credsFuncs, credentialproviderconfig.NewExternalCredentialProviderKeychain(ctx, opts...))
 	}
 	if cfg.CRIKeychainConfig.EnableKeychain {
 

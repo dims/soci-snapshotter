@@ -41,6 +41,9 @@ type ServiceConfig struct {
 	// CRIKeychainConfig is config for CRI-based keychain.
 	CRIKeychainConfig `toml:"cri_keychain"`
 
+	// ExternalCredentialProviderConfig is config for CRI-based keychain.
+	ExternalCredentialProviderConfig `toml:"credential_provider_keychain"`
+
 	// ResolverConfig is config for resolving registries.
 	ResolverConfig `toml:"resolver"`
 
@@ -65,6 +68,15 @@ type CRIKeychainConfig struct {
 
 	// ImageServicePath is the path to the unix socket of backing CRI Image Service (e.g. containerd CRI plugin)
 	ImageServicePath string `toml:"image_service_path"`
+}
+
+// ExternalCredentialProviderConfig is config for external credential provider keychain.
+type ExternalCredentialProviderConfig struct {
+	// EnableKeychain enables CRI-based keychain
+	EnableKeychain bool `toml:"enable_keychain"`
+
+	// ProviderBinaryPath is the path to the external credential provider binary
+	ProviderBinaryPath string `toml:"provider_binary_path"`
 }
 
 // SnapshotterConfig is snapshotter-related config.

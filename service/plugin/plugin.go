@@ -35,6 +35,7 @@ package plugin
 import (
 	"errors"
 	"fmt"
+	"github.com/awslabs/soci-snapshotter/service/keychain/credentialproviderconfig"
 	"net"
 	"os"
 	"path/filepath"
@@ -101,6 +102,13 @@ func init() {
 					opts = append(opts, kubeconfig.WithKubeconfigPath(kcp))
 				}
 				credsFuncs = append(credsFuncs, kubeconfig.NewKubeconfigKeychain(ctx, opts...))
+			}
+			if config.ExternalCredentialProviderConfig.EnableKeychain {
+				var opts []credentialproviderconfig.Option
+				if path := config.ExternalCredentialProviderConfig.ProviderBinaryPath; path != "" {
+					opts = append(opts, credentialproviderconfig.WithCredentialProviderPath(path))
+				}
+				credsFuncs = append(credsFuncs, credentialproviderconfig.NewExternalCredentialProviderKeychain(ctx, opts...))
 			}
 			if addr := config.CRIKeychainImageServicePath; config.CRIKeychainConfig.EnableKeychain && addr != "" {
 				// connects to the backend CRI service (defaults to containerd socket)
